@@ -1,0 +1,204 @@
+﻿namespace Mimica
+{
+    partial class FrmMain
+    {
+        /// <summary>
+        ///  Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        ///  Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
+            lblStatus = new Label();
+            imgLastScreenshot = new PictureBox();
+            imgStatus = new PictureBox();
+            lvwEvents = new ListView();
+            image = new ColumnHeader();
+            eventDate = new ColumnHeader();
+            eventType = new ColumnHeader();
+            keyPressed = new ColumnHeader();
+            imageList1 = new ImageList(components);
+            lblEventCount = new Label();
+            statusStrip1 = new StatusStrip();
+            chkTopMost = new CheckBox();
+            cmdClear = new Button();
+            ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)imgStatus).BeginInit();
+            SuspendLayout();
+            // 
+            // lblStatus
+            // 
+            lblStatus.AutoSize = true;
+            lblStatus.Location = new Point(31, 21);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(92, 20);
+            lblStatus.TabIndex = 0;
+            lblStatus.Text = "Monitoring...";
+            // 
+            // imgLastScreenshot
+            // 
+            imgLastScreenshot.BackgroundImageLayout = ImageLayout.Stretch;
+            imgLastScreenshot.BorderStyle = BorderStyle.FixedSingle;
+            imgLastScreenshot.Location = new Point(17, 48);
+            imgLastScreenshot.Name = "imgLastScreenshot";
+            imgLastScreenshot.Size = new Size(115, 105);
+            imgLastScreenshot.TabIndex = 1;
+            imgLastScreenshot.TabStop = false;
+            // 
+            // imgStatus
+            // 
+            imgStatus.BackgroundImage = (Image)resources.GetObject("imgStatus.BackgroundImage");
+            imgStatus.BackgroundImageLayout = ImageLayout.Stretch;
+            imgStatus.Location = new Point(12, 24);
+            imgStatus.Name = "imgStatus";
+            imgStatus.Size = new Size(19, 17);
+            imgStatus.TabIndex = 2;
+            imgStatus.TabStop = false;
+            imgStatus.Visible = false;
+            // 
+            // lvwEvents
+            // 
+            lvwEvents.Columns.AddRange(new ColumnHeader[] { image, eventDate, eventType, keyPressed });
+            lvwEvents.HeaderStyle = ColumnHeaderStyle.Nonclickable;
+            lvwEvents.Location = new Point(150, 12);
+            lvwEvents.MultiSelect = false;
+            lvwEvents.Name = "lvwEvents";
+            lvwEvents.Size = new Size(523, 221);
+            lvwEvents.SmallImageList = imageList1;
+            lvwEvents.TabIndex = 4;
+            lvwEvents.UseCompatibleStateImageBehavior = false;
+            lvwEvents.View = View.Details;
+            // 
+            // image
+            // 
+            image.Text = "";
+            image.Width = 30;
+            // 
+            // eventDate
+            // 
+            eventDate.Text = "Date";
+            eventDate.Width = 200;
+            // 
+            // eventType
+            // 
+            eventType.Text = "Type";
+            eventType.Width = 140;
+            // 
+            // keyPressed
+            // 
+            keyPressed.Text = "Key Pressed";
+            keyPressed.Width = 120;
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth32Bit;
+            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = Color.Transparent;
+            imageList1.Images.SetKeyName(0, "MouseClickLeft");
+            imageList1.Images.SetKeyName(1, "MouseClickRight");
+            imageList1.Images.SetKeyName(2, "KeyboardKeyPressed");
+            // 
+            // lblEventCount
+            // 
+            lblEventCount.AutoSize = true;
+            lblEventCount.Location = new Point(150, 236);
+            lblEventCount.Name = "lblEventCount";
+            lblEventCount.Size = new Size(63, 20);
+            lblEventCount.TabIndex = 5;
+            lblEventCount.Text = "0 events";
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.ImageScalingSize = new Size(20, 20);
+            statusStrip1.Location = new Point(0, 267);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(685, 22);
+            statusStrip1.TabIndex = 6;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // chkTopMost
+            // 
+            chkTopMost.AutoSize = true;
+            chkTopMost.Location = new Point(17, 173);
+            chkTopMost.Name = "chkTopMost";
+            chkTopMost.Size = new Size(89, 24);
+            chkTopMost.TabIndex = 7;
+            chkTopMost.Text = "Topmost";
+            chkTopMost.UseVisualStyleBackColor = true;
+            chkTopMost.CheckedChanged += chkTopMost_CheckedChanged;
+            // 
+            // cmdClear
+            // 
+            cmdClear.Location = new Point(613, 236);
+            cmdClear.Name = "cmdClear";
+            cmdClear.Size = new Size(60, 27);
+            cmdClear.TabIndex = 8;
+            cmdClear.Text = "Clear";
+            cmdClear.UseVisualStyleBackColor = true;
+            cmdClear.Click += cmdClear_Click;
+            // 
+            // FrmMain
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(685, 289);
+            Controls.Add(cmdClear);
+            Controls.Add(chkTopMost);
+            Controls.Add(statusStrip1);
+            Controls.Add(lblEventCount);
+            Controls.Add(lvwEvents);
+            Controls.Add(imgStatus);
+            Controls.Add(imgLastScreenshot);
+            Controls.Add(lblStatus);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimumSize = new Size(400, 184);
+            Name = "FrmMain";
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Mimica";
+            Load += FrmMain_Load;
+            ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).EndInit();
+            ((System.ComponentModel.ISupportInitialize)imgStatus).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private Label lblStatus;
+        private PictureBox imgLastScreenshot;
+        private PictureBox imgStatus;
+        private ListView lvwEvents;
+        private ImageList imageList1;
+        private ColumnHeader image;
+        private ColumnHeader eventDate;
+        private ColumnHeader eventType;
+        private ColumnHeader keyPressed;
+        private Label lblEventCount;
+        private StatusStrip statusStrip1;
+        private CheckBox chkTopMost;
+        private Button cmdClear;
+    }
+}
