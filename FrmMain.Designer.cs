@@ -43,14 +43,19 @@
             statusStrip1 = new StatusStrip();
             chkTopMost = new CheckBox();
             cmdClear = new Button();
+            notifyIcon = new NotifyIcon(components);
+            contextMenuStrip = new ContextMenuStrip(components);
+            showToolStripMenuItem = new ToolStripMenuItem();
+            exitToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).BeginInit();
             ((System.ComponentModel.ISupportInitialize)imgStatus).BeginInit();
+            contextMenuStrip.SuspendLayout();
             SuspendLayout();
             // 
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(31, 21);
+            lblStatus.Location = new Point(35, 22);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(92, 20);
             lblStatus.TabIndex = 0;
@@ -150,13 +155,42 @@
             // 
             // cmdClear
             // 
-            cmdClear.Location = new Point(613, 236);
+            cmdClear.Location = new Point(12, 203);
             cmdClear.Name = "cmdClear";
             cmdClear.Size = new Size(60, 27);
             cmdClear.TabIndex = 8;
             cmdClear.Text = "Clear";
             cmdClear.UseVisualStyleBackColor = true;
             cmdClear.Click += cmdClear_Click;
+            // 
+            // notifyIcon
+            // 
+            notifyIcon.ContextMenuStrip = contextMenuStrip;
+            notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
+            notifyIcon.Text = "Mimica";
+            notifyIcon.Visible = true;
+            notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
+            // 
+            // contextMenuStrip
+            // 
+            contextMenuStrip.ImageScalingSize = new Size(20, 20);
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { showToolStripMenuItem, exitToolStripMenuItem });
+            contextMenuStrip.Name = "contextMenuStrip";
+            contextMenuStrip.Size = new Size(115, 52);
+            // 
+            // showToolStripMenuItem
+            // 
+            showToolStripMenuItem.Name = "showToolStripMenuItem";
+            showToolStripMenuItem.Size = new Size(114, 24);
+            showToolStripMenuItem.Text = "Show";
+            showToolStripMenuItem.Click += showToolStripMenuItem_Click;
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(114, 24);
+            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // FrmMain
             // 
@@ -172,15 +206,17 @@
             Controls.Add(imgLastScreenshot);
             Controls.Add(lblStatus);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimumSize = new Size(400, 184);
             Name = "FrmMain";
-            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Mimica";
-            Load += FrmMain_Load;
+            FormClosing += MainForm_FormClosing;
+            Resize += FrmMain_Resize;
             ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).EndInit();
             ((System.ComponentModel.ISupportInitialize)imgStatus).EndInit();
+            contextMenuStrip.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -200,5 +236,9 @@
         private StatusStrip statusStrip1;
         private CheckBox chkTopMost;
         private Button cmdClear;
+        private NotifyIcon notifyIcon;
+        private ContextMenuStrip contextMenuStrip;
+        private ToolStripMenuItem showToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
     }
 }

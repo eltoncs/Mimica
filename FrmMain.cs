@@ -3,6 +3,7 @@ namespace Mimica
     using Mimica.Services;
     using Mimica.Extensions;
     using Mimica.Entities;
+    using System.Windows.Forms;
 
     public partial class FrmMain : Form
     {
@@ -69,12 +70,17 @@ namespace Mimica
             }
 
             this.logEventToTextPanel();
-            Event lastEvent = this.eventQueue.Last();
+            Event? lastEvent = this.eventQueue.LastOrDefault();
+
+            if (lastEvent == null)
+            {
+                return;
+            }
 
             if (lastEvent.screenShotImg != null)
             {
                 this.imgLastScreenshot.BackgroundImage = lastEvent.screenShotImg;
-            }            
+            }
         }
 
         private void logEventToTextPanel()
@@ -101,8 +107,16 @@ namespace Mimica
             this.lblEventCount.Text = $"{this.lvwEvents.Items.Count} events";
         }
 
-        private void FrmMain_Load(object sender, EventArgs e)
+        private void ExitApp(object sender, EventArgs e)
         {
+            notifyIcon.Visible = false;
+            Application.Exit();
+        }
+
+        private void ShowApp(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
         }
 
         private void chkTopMost_CheckedChanged(object sender, EventArgs e)
@@ -115,6 +129,43 @@ namespace Mimica
             this.eventQueue.Clear();
             this.lvwEvents.Items.Clear();
             this.lblEventCount.Text = $"{eventQueue.Count} events";
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.ShowApp(sender, e);
+        }
+
+        private void FrmMain_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+
+                this.notifyIcon.BalloonTipTitle = "Mimica Minimized";
+                this.notifyIcon.BalloonTipText = "The application is still running in the background.";
+                this.notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                this.notifyIcon.ShowBalloonTip(3000);
+            }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.WindowState = FormWindowState.Minimized;
+            }
+        }
+
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ShowApp(sender, e);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.ExitApp(sender, e);
         }
     }
 }
