@@ -36,6 +36,11 @@ namespace Mimica
         //Event hooks callbacks
         private void ProcessMouseEvents(string mouseEvent)
         {
+            if (!this.screenCaptureService.IsCapturing())
+            {
+                return;
+            }
+
             this.eventQueue.Enqueue(
             new Event()
             {
@@ -175,5 +180,20 @@ namespace Mimica
             this.ExitApp(sender, e);
         }
         #endregion
+
+        private void btnStartStopCapturing_Click(object sender, EventArgs e)
+        {
+            if (this.screenCaptureService.IsCapturing())
+            {
+                this.screenCaptureService.StopCapturing();
+                this.btnStartStopCapturing.Text = "Start Capturing";
+                this.lblStatus.Text = "Paused";
+                return;
+            }
+
+            this.screenCaptureService.StartCapturing();
+            this.btnStartStopCapturing.Text = "Stop Capturing";
+            this.lblStatus.Text = "Monitoring";
+        }
     }
 }

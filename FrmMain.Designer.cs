@@ -47,8 +47,9 @@
             contextMenuStrip = new ContextMenuStrip(components);
             showToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
-            btnExit = new Button();
             resetMonitoringToolStripMenuItem = new ToolStripMenuItem();
+            btnExit = new Button();
+            btnStartStopCapturing = new Button();
             ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).BeginInit();
             ((System.ComponentModel.ISupportInitialize)imgStatus).BeginInit();
             contextMenuStrip.SuspendLayout();
@@ -129,7 +130,7 @@
             // lblEventCount
             // 
             lblEventCount.AutoSize = true;
-            lblEventCount.Location = new Point(216, 242);
+            lblEventCount.Location = new Point(373, 242);
             lblEventCount.Name = "lblEventCount";
             lblEventCount.Size = new Size(63, 20);
             lblEventCount.TabIndex = 5;
@@ -178,21 +179,27 @@
             contextMenuStrip.ImageScalingSize = new Size(20, 20);
             contextMenuStrip.Items.AddRange(new ToolStripItem[] { showToolStripMenuItem, exitToolStripMenuItem, resetMonitoringToolStripMenuItem });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(211, 104);
+            contextMenuStrip.Size = new Size(193, 76);
             // 
             // showToolStripMenuItem
             // 
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(210, 24);
+            showToolStripMenuItem.Size = new Size(192, 24);
             showToolStripMenuItem.Text = "Show";
             showToolStripMenuItem.Click += showToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(210, 24);
+            exitToolStripMenuItem.Size = new Size(192, 24);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
+            // 
+            // resetMonitoringToolStripMenuItem
+            // 
+            resetMonitoringToolStripMenuItem.Name = "resetMonitoringToolStripMenuItem";
+            resetMonitoringToolStripMenuItem.Size = new Size(192, 24);
+            resetMonitoringToolStripMenuItem.Text = "Reset Monitoring";
             // 
             // btnExit
             // 
@@ -204,12 +211,15 @@
             btnExit.UseVisualStyleBackColor = true;
             btnExit.Click += btnExit_Click;
             // 
-            // resetMonitoringToolStripMenuItem
+            // btnStartStopCapturing
             // 
-            resetMonitoringToolStripMenuItem.Name = "resetMonitoringToolStripMenuItem";
-            resetMonitoringToolStripMenuItem.Size = new Size(210, 24);
-            resetMonitoringToolStripMenuItem.Text = "Reset Monitoring";
-            resetMonitoringToolStripMenuItem.Click += resetMonitoringToolStripMenuItem_Click;
+            btnStartStopCapturing.Location = new Point(216, 237);
+            btnStartStopCapturing.Name = "btnStartStopCapturing";
+            btnStartStopCapturing.Size = new Size(127, 29);
+            btnStartStopCapturing.TabIndex = 10;
+            btnStartStopCapturing.Text = "Stop Capturing";
+            btnStartStopCapturing.UseVisualStyleBackColor = true;
+            btnStartStopCapturing.Click += btnStartStopCapturing_Click;
             // 
             // FrmMain
             // 
@@ -217,6 +227,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = btnExit;
             ClientSize = new Size(685, 300);
+            Controls.Add(btnStartStopCapturing);
             Controls.Add(btnExit);
             Controls.Add(cmdClear);
             Controls.Add(chkTopMost);
@@ -263,5 +274,6 @@
         private ToolStripMenuItem exitToolStripMenuItem;
         private Button btnExit;
         private ToolStripMenuItem resetMonitoringToolStripMenuItem;
+        private Button btnStartStopCapturing;
     }
 }

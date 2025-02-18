@@ -2,7 +2,8 @@
 {
     public class ScreenCaptureService : IScreenCaptureService
     {
-        private Bitmap? screenshotImg = null;        
+        private Bitmap? screenshotImg = null;
+        private bool stopCapturing = false;
 
         public Bitmap? GetLastScreenshotImg()
         {
@@ -13,6 +14,12 @@
         {
             while (true)
             {
+                if (stopCapturing)
+                {
+                    await Task.Delay(200);
+                    continue;
+                }
+
                 if (lightIcon != null)
                 {
                     lightIcon.Visible = !lightIcon.Visible;
@@ -26,6 +33,21 @@
         public async Task ForceScreenshotCapture()
         {
             await Task.Run(() => CaptureScreenShot());
+        }
+
+        public void StopCapturing()
+        {
+            this.stopCapturing = true;
+        }
+
+        public void StartCapturing()
+        {
+            this.stopCapturing = false;
+        }
+
+        public bool IsCapturing()
+        {
+            return !this.stopCapturing;
         }
 
         private void CaptureScreenShot()

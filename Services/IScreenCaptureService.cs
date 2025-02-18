@@ -5,5 +5,9 @@
         Bitmap? GetLastScreenshotImg();
         Task StartScreenshotCapture(PictureBox? lightIcon = null);
         Task ForceScreenshotCapture();
+
+        void StopCapturing();
+        void StartCapturing();
+        bool IsCapturing();
     }
 }
