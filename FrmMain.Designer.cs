@@ -47,6 +47,8 @@
             contextMenuStrip = new ContextMenuStrip(components);
             showToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
+            btnExit = new Button();
+            resetMonitoringToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).BeginInit();
             ((System.ComponentModel.ISupportInitialize)imgStatus).BeginInit();
             contextMenuStrip.SuspendLayout();
@@ -127,7 +129,7 @@
             // lblEventCount
             // 
             lblEventCount.AutoSize = true;
-            lblEventCount.Location = new Point(150, 236);
+            lblEventCount.Location = new Point(216, 242);
             lblEventCount.Name = "lblEventCount";
             lblEventCount.Size = new Size(63, 20);
             lblEventCount.TabIndex = 5;
@@ -136,7 +138,7 @@
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
-            statusStrip1.Location = new Point(0, 267);
+            statusStrip1.Location = new Point(0, 278);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(685, 22);
             statusStrip1.TabIndex = 6;
@@ -155,7 +157,7 @@
             // 
             // cmdClear
             // 
-            cmdClear.Location = new Point(12, 203);
+            cmdClear.Location = new Point(150, 239);
             cmdClear.Name = "cmdClear";
             cmdClear.Size = new Size(60, 27);
             cmdClear.TabIndex = 8;
@@ -174,29 +176,48 @@
             // contextMenuStrip
             // 
             contextMenuStrip.ImageScalingSize = new Size(20, 20);
-            contextMenuStrip.Items.AddRange(new ToolStripItem[] { showToolStripMenuItem, exitToolStripMenuItem });
+            contextMenuStrip.Items.AddRange(new ToolStripItem[] { showToolStripMenuItem, exitToolStripMenuItem, resetMonitoringToolStripMenuItem });
             contextMenuStrip.Name = "contextMenuStrip";
-            contextMenuStrip.Size = new Size(115, 52);
+            contextMenuStrip.Size = new Size(211, 104);
             // 
             // showToolStripMenuItem
             // 
             showToolStripMenuItem.Name = "showToolStripMenuItem";
-            showToolStripMenuItem.Size = new Size(114, 24);
+            showToolStripMenuItem.Size = new Size(210, 24);
             showToolStripMenuItem.Text = "Show";
             showToolStripMenuItem.Click += showToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(114, 24);
+            exitToolStripMenuItem.Size = new Size(210, 24);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
+            // 
+            // btnExit
+            // 
+            btnExit.Location = new Point(603, 244);
+            btnExit.Name = "btnExit";
+            btnExit.Size = new Size(66, 29);
+            btnExit.TabIndex = 9;
+            btnExit.Text = "Exit";
+            btnExit.UseVisualStyleBackColor = true;
+            btnExit.Click += btnExit_Click;
+            // 
+            // resetMonitoringToolStripMenuItem
+            // 
+            resetMonitoringToolStripMenuItem.Name = "resetMonitoringToolStripMenuItem";
+            resetMonitoringToolStripMenuItem.Size = new Size(210, 24);
+            resetMonitoringToolStripMenuItem.Text = "Reset Monitoring";
+            resetMonitoringToolStripMenuItem.Click += resetMonitoringToolStripMenuItem_Click;
             // 
             // FrmMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(685, 289);
+            CancelButton = btnExit;
+            ClientSize = new Size(685, 300);
+            Controls.Add(btnExit);
             Controls.Add(cmdClear);
             Controls.Add(chkTopMost);
             Controls.Add(statusStrip1);
@@ -240,5 +261,7 @@
         private ContextMenuStrip contextMenuStrip;
         private ToolStripMenuItem showToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private Button btnExit;
+        private ToolStripMenuItem resetMonitoringToolStripMenuItem;
     }
 }

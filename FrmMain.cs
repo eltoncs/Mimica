@@ -119,6 +119,8 @@ namespace Mimica
             this.WindowState = FormWindowState.Normal;
         }
 
+
+        #region Event Handlers
         private void chkTopMost_CheckedChanged(object sender, EventArgs e)
         {
             this.TopMost = this.chkTopMost.Checked;
@@ -167,5 +169,11 @@ namespace Mimica
         {
             this.ExitApp(sender, e);
         }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.ExitApp(sender, e);
+        }
+        #endregion
     }
 }
