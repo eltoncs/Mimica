@@ -1,4 +1,8 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Mimica.Properties;
 using Mimica.Services;
 
 namespace Mimica
@@ -10,21 +14,34 @@ namespace Mimica
         [STAThread]
         static void Main()
         {
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.SetBasePath(Directory.GetCurrentDirectory());
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    services.Configure<AppSettings>(context.Configuration.GetSection("AppSettings"));
+                    services.AddTransient<FrmMain>();
+                    services.AddTransient<IEventHooksService, EventHooksService>();
+                    services.AddTransient<IScreenCaptureService, ScreenCaptureService>();
+                    services.AddTransient<IEventLogService, EventLogService>();
+                })
+                .Build();
+
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddTransient<IEventHooksService, EventHooksService>();
             serviceCollection.AddTransient<IScreenCaptureService, ScreenCaptureService>();
             serviceCollection.AddTransient<IEventLogService, EventLogService>();
 
-            ServiceProvider = serviceCollection.BuildServiceProvider();
+            ServiceProvider = host.Services;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             ApplicationConfiguration.Initialize();
-            Application.Run(new FrmMain
-                (ServiceProvider.GetRequiredService<IEventHooksService>(),
-                ServiceProvider.GetRequiredService<IScreenCaptureService>(),
-                ServiceProvider.GetRequiredService<IEventLogService>()));
+            Application.Run(ServiceProvider.GetRequiredService<FrmMain>());
         }
     }
 }

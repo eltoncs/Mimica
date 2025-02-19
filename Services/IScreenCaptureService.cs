@@ -3,7 +3,11 @@
     public interface IScreenCaptureService
     {
         Bitmap? GetLastScreenshotImg();
-        Task StartScreenshotCapture(PictureBox? lightIcon = null);
+
+        Task StartScreenshotCapture(
+            int ScreenshotCaptureIntervalMs,
+            PictureBox? lightIcon = null);
+
         Task ForceScreenshotCapture();
 
         void StopCapturing();

@@ -10,13 +10,15 @@
             return screenshotImg;
         }
 
-        public async Task StartScreenshotCapture(PictureBox? lightIcon = null)
+        public async Task StartScreenshotCapture(
+            int ScreenshotCaptureIntervalMs,
+            PictureBox? lightIcon = null)
         {
             while (true)
             {
                 if (stopCapturing)
                 {
-                    await Task.Delay(200);
+                    await Task.Delay(ScreenshotCaptureIntervalMs);
                     continue;
                 }
 
@@ -26,7 +28,7 @@
                 }
 
                 await Task.Run(() => CaptureScreenShot());
-                await Task.Delay(200);
+                await Task.Delay(ScreenshotCaptureIntervalMs);
             }
         }
 

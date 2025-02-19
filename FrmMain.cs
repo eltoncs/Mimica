@@ -4,24 +4,32 @@ namespace Mimica
     using Mimica.Extensions;
     using Mimica.Entities;
     using System.Windows.Forms;
+    using Mimica.Properties;
+    using Microsoft.Extensions.Options;
 
     public partial class FrmMain : Form
     {
         private Queue<Event> eventQueue = new Queue<Event>();
         private string currentUser = Environment.UserName;
 
+        private readonly AppSettings appSettings;
         private readonly IScreenCaptureService screenCaptureService;
 
         public FrmMain(
+            IOptions<AppSettings> appSettings,
             IEventHooksService eventHooksService,
             IScreenCaptureService screenCaptureService,
             IEventLogService eventLogService)
         {
+            this.appSettings = appSettings.Value;
+
+            var ScreenshotCaptureIntervalMs = int.Parse(this.appSettings.ScreenshotCaptureIntervalMs);
             this.screenCaptureService = screenCaptureService;
 
             InitializeComponent();
 
             screenCaptureService.StartScreenshotCapture(
+                ScreenshotCaptureIntervalMs: ScreenshotCaptureIntervalMs,
                 lightIcon: this.imgStatus);
 
             eventHooksService.Subscribe(
