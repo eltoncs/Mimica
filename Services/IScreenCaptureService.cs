@@ -1,4 +1,6 @@
-﻿namespace Mimica.Services
+﻿using Mimica.Entities;
+
+namespace Mimica.Services
 {
     public interface IScreenCaptureService
     {
@@ -8,7 +10,7 @@
             int ScreenshotCaptureIntervalMs,
             PictureBox? lightIcon = null);
 
-        Task ForceScreenshotCapture();
+        Task ForceScreenshotCapture(Event? ev);
 
         void StopCapturing();
         void StartCapturing();

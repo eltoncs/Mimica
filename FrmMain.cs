@@ -63,14 +63,22 @@ namespace Mimica
 
         private void ProcessKeyStrokes(string keyPressed)
         {
-            this.eventQueue.Enqueue(
-            new Event()
+            if (!this.screenCaptureService.IsCapturing())
+            {
+                return;
+            }
+
+            var newEvent = new Event()
             {
                 TimeStamp = DateTime.UtcNow.ToUnixTimeStamp(),
                 EventType = EventType.KeyboardKeyPressed,
-                screenShotImg = this.screenCaptureService.GetLastScreenshotImg(),
                 KeyPressed = keyPressed
-            });
+            };
+
+            this.screenCaptureService.ForceScreenshotCapture(newEvent);
+            newEvent.screenShotImg = this.screenCaptureService.GetLastScreenshotImg();
+
+            this.eventQueue.Enqueue(newEvent);
 
             this.logEventToScreen();
         }

@@ -1,4 +1,7 @@
-﻿namespace Mimica.Services
+﻿using Mimica.Entities;
+using System.Diagnostics.Eventing.Reader;
+
+namespace Mimica.Services
 {
     public class ScreenCaptureService : IScreenCaptureService
     {
@@ -32,9 +35,9 @@
             }
         }
 
-        public async Task ForceScreenshotCapture()
+        public async Task ForceScreenshotCapture(Event ev)
         {
-            await Task.Run(() => CaptureScreenShot());
+            await Task.Run(() => CaptureScreenShot(ev));
         }
 
         public void StopCapturing()
@@ -52,7 +55,7 @@
             return !this.stopCapturing;
         }
 
-        private void CaptureScreenShot()
+        private void CaptureScreenShot(Event? ev = null)
         {
             try
             {
@@ -60,6 +63,11 @@
 
                 using Graphics graphics = Graphics.FromImage(screenshotImg);
                 graphics.CopyFromScreen(0, 0, 0, 0, screenshotImg.Size);
+
+                if (ev != null)
+                {
+                    ev.screenShotImg = screenshotImg;
+                }
             }
             catch (Exception ex)
             {

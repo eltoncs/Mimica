@@ -1,6 +1,7 @@
 ﻿using Mimica.Entities;
 using Mimica.Extensions;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 
 namespace Mimica.Services
@@ -24,7 +25,7 @@ namespace Mimica.Services
             }
 
             string filePath = Path.Combine(eventLogsFolder, $"eventlog_{DateTime.UtcNow.ToUnixDateStamp()}.csv");
-
+            await Task.Delay(intervalMs);
             while (true)
             {
                 if (eventQueue.Count == 0)
@@ -33,16 +34,11 @@ namespace Mimica.Services
                     continue;
                 }
 
-                //if (saveIcon != null)
-                //{
-                //    saveIcon.Visible = !saveIcon.Visible;
-                //}
-
                 try
                 {
                     await Task.Run(() => SaveLogToFile(
-                    filePath: filePath,
-                    eventQueue: eventQueue));
+                        filePath: filePath,
+                        eventQueue: eventQueue));
 
                     await Task.Delay(intervalMs);
                 }
@@ -53,7 +49,7 @@ namespace Mimica.Services
             }
         }
 
-        private async Task UpdateEvents(ConcurrentQueue<Event> eventQueue)
+        private void UpdateEvents(ConcurrentQueue<Event> eventQueue)
         {
             if (eventQueue.Count == 0)
             {
@@ -64,12 +60,12 @@ namespace Mimica.Services
             {
                 if (ev.screenShotImg != null)
                 {
-                    ev.ScreenShotPath = await this.SaveScreenshotToFile(ev.screenShotImg!);
+                    ev.ScreenShotPath = this.SaveScreenshotToFile(ev.screenShotImg!);
                 }
             }
         }
 
-        private async Task<string> SaveScreenshotToFile(Bitmap screenshotImg)
+        private string SaveScreenshotToFile(Bitmap screenshotImg)
         {
             if (screenshotImg == null)
             {
@@ -84,8 +80,8 @@ namespace Mimica.Services
                 }
 
                 string filePath = Path.Combine(screenshotFolder, $"screenshot_{DateTime.UtcNow.ToUnixTimeStamp()}.png");
+                screenshotImg.Save(filePath, ImageFormat.Png);
 
-                await Task.Run(() => screenshotImg.Save(filePath, ImageFormat.Png));
                 return filePath;
             }
             catch (Exception ex)
@@ -94,14 +90,13 @@ namespace Mimica.Services
             }
         }
 
-        private async Task SaveLogToFile(
+        private void SaveLogToFile(
             string filePath,
             ConcurrentQueue<Event> eventQueue)
         {
-            await this.UpdateEvents(eventQueue);
-
             try
             {
+                this.UpdateEvents(eventQueue);
                 File.AppendAllLines(filePath, eventQueue.GetCSVLines(dequeue: true));
             }
             catch (Exception ex)

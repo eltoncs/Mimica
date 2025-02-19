@@ -14,8 +14,13 @@ namespace Mimica.Extensions
             this ConcurrentQueue<Event> eventQueue,
             bool dequeue = false)
         {
-            while (eventQueue.Count > 0)
+            foreach (Event ev in eventQueue)
             {
+                if (ev.ScreenShotPath == null)
+                {
+                    continue;
+                }
+
                 if (dequeue)
                 {
                     if (eventQueue.TryDequeue(out Event? dequeuedEvent))
