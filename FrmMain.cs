@@ -6,10 +6,11 @@ namespace Mimica
     using System.Windows.Forms;
     using Mimica.Properties;
     using Microsoft.Extensions.Options;
+    using System.Collections.Concurrent;
 
     public partial class FrmMain : Form
     {
-        private Queue<Event> eventQueue = new Queue<Event>();
+        private ConcurrentQueue<Event> eventQueue = new ConcurrentQueue<Event>();
         private string currentUser = Environment.UserName;
 
         private readonly AppSettings appSettings;

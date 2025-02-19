@@ -1,5 +1,6 @@
 ﻿using Mimica.Entities;
 using Mimica.Extensions;
+using System.Collections.Concurrent;
 using System.Drawing.Imaging;
 
 namespace Mimica.Services
@@ -12,7 +13,7 @@ namespace Mimica.Services
         private string screenshotFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Mimica", "Screenshots");
 
         public async Task StartLogCapture(
-            Queue<Event> eventQueue,
+            ConcurrentQueue<Event> eventQueue,
             string user,
             int intervalMs = 2000,
             PictureBox? saveIcon = null)
@@ -32,20 +33,27 @@ namespace Mimica.Services
                     continue;
                 }
 
-                if (saveIcon != null)
-                {
-                    saveIcon.Visible = !saveIcon.Visible;
-                }
+                //if (saveIcon != null)
+                //{
+                //    saveIcon.Visible = !saveIcon.Visible;
+                //}
 
-                await Task.Run(() => SaveLogToFile(
+                try
+                {
+                    await Task.Run(() => SaveLogToFile(
                     filePath: filePath,
                     eventQueue: eventQueue));
 
-                await Task.Delay(intervalMs);
+                    await Task.Delay(intervalMs);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"Error saving log to file: {ex.Message}");
+                }
             }
         }
 
-        private async Task UpdateEvents(Queue<Event> eventQueue)
+        private async Task UpdateEvents(ConcurrentQueue<Event> eventQueue)
         {
             if (eventQueue.Count == 0)
             {
@@ -88,7 +96,7 @@ namespace Mimica.Services
 
         private async Task SaveLogToFile(
             string filePath,
-            Queue<Event> eventQueue)
+            ConcurrentQueue<Event> eventQueue)
         {
             await this.UpdateEvents(eventQueue);
 

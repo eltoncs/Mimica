@@ -30,10 +30,10 @@ namespace Mimica
                 })
                 .Build();
 
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddTransient<IEventHooksService, EventHooksService>();
-            serviceCollection.AddTransient<IScreenCaptureService, ScreenCaptureService>();
-            serviceCollection.AddTransient<IEventLogService, EventLogService>();
+            //var serviceCollection = new ServiceCollection();
+            //serviceCollection.AddTransient<IEventHooksService, EventHooksService>();
+            //serviceCollection.AddTransient<IScreenCaptureService, ScreenCaptureService>();
+            //serviceCollection.AddTransient<IEventLogService, EventLogService>();
 
             ServiceProvider = host.Services;
 

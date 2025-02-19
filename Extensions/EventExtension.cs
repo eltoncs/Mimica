@@ -1,4 +1,5 @@
 ﻿using Mimica.Entities;
+using System.Collections.Concurrent;
 
 namespace Mimica.Extensions
 {
@@ -10,13 +11,24 @@ namespace Mimica.Extensions
         }
 
         public static IEnumerable<string> GetCSVLines(
-            this Queue<Event> eventQueue,
+            this ConcurrentQueue<Event> eventQueue,
             bool dequeue = false)
         {
             while (eventQueue.Count > 0)
             {
-                Event ev = dequeue ? eventQueue.Dequeue() : eventQueue.Peek();
-                yield return ev.GetCSVLine();
+                if (dequeue)
+                {
+                    if (eventQueue.TryDequeue(out Event? dequeuedEvent))
+                    {
+                        yield return dequeuedEvent.GetCSVLine();
+                        continue;
+                    }
+                }
+
+                if (eventQueue.TryPeek(out Event? peekedEvent))
+                {
+                    yield return peekedEvent.GetCSVLine();
+                }
             }
         }
     }
