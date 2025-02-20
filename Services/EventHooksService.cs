@@ -7,66 +7,79 @@ namespace Mimica.Services
     {
         private IKeyboardMouseEvents? globalHook;
         private Action<string>? processMouseEvents;
-        private Action<string>? processKeyStroke;
-
-        private string lastKeyPressed = string.Empty;
+        private Action<string>? processKeyUp;
+        private Action<string>? processKeyPress;
 
         public void Subscribe(
             Action<string> processMouseEvents, 
-            Action<string> processKeyStrokes)
+            Action<string> processKeyUp,
+            Action<string> processKeyPress)
         {
             this.processMouseEvents = processMouseEvents;
-            this.processKeyStroke = processKeyStrokes;
+            this.processKeyUp = processKeyUp;
+            this.processKeyPress = processKeyPress;
 
             globalHook = Hook.GlobalEvents();
-            globalHook.MouseDownExt += GlobalHookMouseDownExt;
-            //globalHook.KeyPress += GlobalHookKeyPress;            
-            globalHook.KeyUp += GlobalHookKeyUp;            
+            globalHook.MouseDownExt += MouseDownHook;
+            globalHook.KeyPress += KeyPressHook;            
+            globalHook.KeyUp += KeyUpHook;            
         }
 
-        //private void GlobalHookKeyPress(object? sender, KeyPressEventArgs e)
-        //{
-        //    this.lastKeyPressed = e.KeyChar.ToString();            
-        //}
-
-        private void GlobalHookKeyUp(object? sender, KeyEventArgs e)
+        private void KeyPressHook(object? sender, KeyPressEventArgs key)
         {
-            if (IsControlKey(e))
+            if (!KeyboardUtil.IsValidKeyboardCharacter(key.KeyChar))
             {
-                string charFromKey = KeyboardUtil.GetCaracterFromKey(e.KeyCode.ToString());
-
-                if (!string.IsNullOrEmpty(charFromKey))
-                {
-                    this.processKeyStroke!(charFromKey);
-                    return;
-                }
-
-                this.processKeyStroke!($"<{e.KeyCode.ToString()}>");
                 return;
             }
 
-            this.processKeyStroke!(e.KeyData.ToString());
+            this.processKeyPress!(key.KeyChar.ToString());
         }
 
-        private void GlobalHookMouseDownExt(object? sender, MouseEventExtArgs e)
+        private void KeyUpHook(object? sender, KeyEventArgs key)
+        {
+            if (!IsControlKey(key))
+            {
+                return;
+            }
+
+            var ctrlPlusKey = KeyboardUtil.GetCtrlPlusKey(key);
+            if (ctrlPlusKey != string.Empty)
+            {
+                this.processKeyUp!($"<{ctrlPlusKey}>");
+                return;
+            }
+
+            string charFromKey = KeyboardUtil.GetCaracterFromKey(key.KeyCode.ToString());
+            if (!string.IsNullOrEmpty(charFromKey))
+            {
+                return;
+            }
+
+            this.processKeyUp!($"<{key.KeyCode.ToString()}>");
+            return;
+        }
+
+        private void MouseDownHook(object? sender, MouseEventExtArgs e)
         {
             this.processMouseEvents!(e.Button.ToString());
         }
 
-        private bool IsControlKey(KeyEventArgs e)
+        private bool IsControlKey(KeyEventArgs key)
         {
-            var keyCode = e.KeyCode.ToString();
-            var keyData = e.KeyData.ToString().Split(",").First();
+            var keyCode = key.KeyCode.ToString();
+            var keyData = key.KeyData.ToString();
 
-            return keyCode == keyData && keyData.Length > 1;
+            return (keyCode == keyData && keyData.Length > 1) 
+                || KeyboardUtil.GetCtrlPlusKey(key) != string.Empty;
         }
 
         public void Unsubscribe()
         {
             if (globalHook != null)
             {
-                globalHook.MouseDownExt -= GlobalHookMouseDownExt;
-                globalHook.KeyUp -= GlobalHookKeyUp;
+                globalHook.MouseDownExt -= MouseDownHook;
+                globalHook.KeyUp -= KeyUpHook;
+                globalHook.KeyPress -= KeyPressHook;
 
                 globalHook.Dispose();
             }

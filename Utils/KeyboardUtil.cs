@@ -2,7 +2,7 @@
 {
     public static class KeyboardUtil
     {
-        private static Dictionary<string, string> keyMappings = new Dictionary<string,string>()
+        private static Dictionary<string, string> keyUpMappings = new Dictionary<string,string>()
         {
             { "Oem3", "`" },
             { "D1", "1" },
@@ -42,11 +42,45 @@
 
         public static string GetCaracterFromKey(string keyCode)
         {
-            if (keyMappings.ContainsKey(keyCode))
+            if (keyUpMappings.ContainsKey(keyCode))
             {
-                return keyMappings[keyCode];
+                return keyUpMappings[keyCode];
             }
             return string.Empty;
+        }
+
+        //public static bool IgnoreKeyPress(string keyValue)
+        //{
+        //    if (keyValue.ToString().Length > 1)
+        //    {
+        //        return true;
+        //    }
+
+        //    return ignoredInKeyPress.Contains(keyValue);
+        //}
+
+        public static bool IsValidKeyboardCharacter(char character)
+        {
+            return char.IsLetterOrDigit(character) || 
+                char.IsPunctuation(character) || 
+                char.IsSymbol(character);
+        }
+
+        public static string GetCtrlPlusKey(KeyEventArgs key)
+        {
+            var keyData = key.KeyData.ToString().Split(",");
+
+            if (keyData.Length != 2)
+            {
+                return string.Empty;
+            }
+
+            if (keyData[0].Length > 1)
+            {
+                return string.Empty;
+            }
+
+            return $"{keyData[1]}+{keyData[0]}".Trim();
         }
     }
 }

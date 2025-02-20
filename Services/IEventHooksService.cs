@@ -4,7 +4,8 @@
     {
         void Subscribe(
             Action<string> processMouseEvents,
-            Action<string> processKeyStrokes);
+            Action<string> processKeyUp,
+            Action<string> processKeyPress);
 
         void Unsubscribe();
     }

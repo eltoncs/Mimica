@@ -35,7 +35,8 @@ namespace Mimica
 
             eventHooksService.Subscribe(
                 ProcessMouseEvents,
-                ProcessKeyStrokes);
+                ProcessKeyUp,
+                ProcessKeyPress);
 
             eventLogService.StartLogCapture(
                 user: this.currentUser,
@@ -61,7 +62,29 @@ namespace Mimica
             this.logEventToScreen();
         }
 
-        private void ProcessKeyStrokes(string keyPressed)
+        private void ProcessKeyPress(string keyPressed)
+        {
+            if (!this.screenCaptureService.IsCapturing())
+            {
+                return;
+            }
+
+            var newEvent = new Event()
+            {
+                TimeStamp = DateTime.UtcNow.ToUnixTimeStamp(),
+                EventType = EventType.KeyboardKeyPressed,
+                KeyPressed = keyPressed
+            };
+
+            this.screenCaptureService.ForceScreenshotCapture(newEvent);
+            newEvent.screenShotImg = this.screenCaptureService.GetLastScreenshotImg();
+
+            this.eventQueue.Enqueue(newEvent);
+
+            this.logEventToScreen();
+        }
+
+        private void ProcessKeyUp(string keyPressed)
         {
             if (!this.screenCaptureService.IsCapturing())
             {
