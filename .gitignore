@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/MimicaTests/bin/Debug/net8.0-windows
+/MimicaTests/obj/Debug/net8.0-windows
+/MimicaTests/obj
