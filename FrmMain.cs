@@ -1,5 +1,5 @@
 //Contains the business logic
-//Uses a concurrent queue to store the events
+//Uses a concurrent queue to store user events
 //Consumes various services to capture events, screenshots and log them
 namespace Mimica
 {
@@ -24,14 +24,14 @@ namespace Mimica
             IOptions<AppSettings> appSettings,
             IEventHooksService eventHooksService,
             IScreenCaptureService screenCaptureService,
-            IEventLogService eventLogService)
+            ICSVEventLogService eventLogService)
         {
             this.appSettings = appSettings.Value;
             this.eventHooksService = eventHooksService;
             this.screenCaptureService = screenCaptureService;
 
             var screenshotCaptureIntervalMs = int.Parse(this.appSettings.ScreenshotCaptureIntervalMs);            
-            var logRecordingIntervalMs = int.Parse(this.appSettings.ScreenshotCaptureIntervalMs);            
+            var logRecordingIntervalMs = int.Parse(this.appSettings.LogRecordingIntervals);            
 
             InitializeComponent();
 

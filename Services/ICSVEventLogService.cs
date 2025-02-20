@@ -1,7 +1,7 @@
 ﻿using Mimica.Entities;
 using System.Collections.Concurrent;
 
-public interface IEventLogService
+public interface ICSVEventLogService
 {
     Task StartLogRecording(
         ConcurrentQueue<Event> eventQueue,

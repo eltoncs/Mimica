@@ -8,6 +8,7 @@ namespace Mimica.Services
     public class ScreenCaptureService : IScreenCaptureService
     {
         private Bitmap? screenshotImg = null;
+        private bool pauseCapturing = false;
         private bool stopCapturing = false;
 
         public Bitmap? GetLastScreenshotImg()
@@ -27,10 +28,14 @@ namespace Mimica.Services
         {
             while (true)
             {
-                if (stopCapturing)
+                if (pauseCapturing)
                 {
                     await Task.Delay(ScreenshotCaptureIntervalMs);
                     continue;
+                }
+                if (stopCapturing)
+                {
+                    return;
                 }
 
                 if (lightIcon != null)
@@ -59,19 +64,28 @@ namespace Mimica.Services
         }
 
         /// <summary>
-        /// Stop capturing screenshots.
+        /// Pause capturing screenshots.
+        /// </summary>
+        public void PauseCapturing()
+        {
+            this.pauseCapturing = true;
+        }
+
+        /// <summary>
+        /// Pause capturing screenshots.
         /// </summary>
         public void StopCapturing()
         {
             this.stopCapturing = true;
+            this.pauseCapturing = true;
         }
 
         /// <summary>
         /// Resume capturing screenshots.
         /// </summary>
-        public void StartCapturing()
+        public void ResumeCapturing()
         {
-            this.stopCapturing = false;
+            this.pauseCapturing = false;
         }
 
         /// <summary>
@@ -80,7 +94,7 @@ namespace Mimica.Services
         /// <returns></returns>
         public bool IsCapturing()
         {
-            return !this.stopCapturing;
+            return (!this.pauseCapturing && !this.stopCapturing);
         }
 
         private void CaptureScreenShot(Event? ev = null)

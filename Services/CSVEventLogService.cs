@@ -8,7 +8,7 @@ namespace Mimica.Services
     /// <summary>
     /// Service to save screenshots and log events to a CSV file.
     /// </summary>
-    public class EventLogService : IEventLogService
+    public class CSVEventLogService : ICSVEventLogService
     {
         private const string IMG_NOT_AVAILABLE = "*not available*";
 
@@ -67,14 +67,24 @@ namespace Mimica.Services
                 return;
             }
 
-            //Update the screenshot path for each event
-            foreach (Event ev in eventQueue)
+            var queueLock = new object();
+            var tempQueue = new ConcurrentQueue<Event>(eventQueue);
+
+            while (eventQueue.Count > 0)
             {
-                if (ev.screenShotImg != null)
+                lock (queueLock)
                 {
-                    ev.ScreenShotPath = this.SaveScreenshotToFile(ev.screenShotImg!);
-                }
+                    if (eventQueue.TryDequeue(out Event? dequeuedEvent))
+                    {
+                        if (dequeuedEvent.screenShotImg != null)
+                        {
+                            dequeuedEvent.ScreenShotPath = this.SaveScreenshotToFile(dequeuedEvent.screenShotImg!);
+                        }
+                    }
+                }                    
             }
+
+            eventQueue = new ConcurrentQueue<Event>(tempQueue);
         }
 
         private string SaveScreenshotToFile(Bitmap screenshotImg)
@@ -109,7 +119,7 @@ namespace Mimica.Services
             try
             {
                 this.SaveEventsScreenshots(eventQueue);
-                File.AppendAllLines(filePath, eventQueue.GetCSVLines(dequeue: true));
+                File.AppendAllLines(filePath, eventQueue.GetCSVLines());
             }
             catch (Exception ex)
             {

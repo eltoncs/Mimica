@@ -61,14 +61,14 @@ namespace Mimica
         {
             if (this.screenCaptureService.IsCapturing())
             {
-                this.screenCaptureService.StopCapturing();
+                this.screenCaptureService.PauseCapturing();
                 this.btnStartStopCapturing.Text = "Start Capturing";
                 this.lblStatus.Text = "Paused";
                 return;
             }
 
-            this.screenCaptureService.StartCapturing();
-            this.btnStartStopCapturing.Text = "Stop Capturing";
+            this.screenCaptureService.ResumeCapturing();
+            this.btnStartStopCapturing.Text = "Pause Capturing";
             this.lblStatus.Text = "Monitoring";
         }
     }

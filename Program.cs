@@ -25,7 +25,7 @@ namespace Mimica
                     services.AddTransient<FrmMain>();
                     services.AddTransient<IEventHooksService, EventHooksService>();
                     services.AddTransient<IScreenCaptureService, ScreenCaptureService>();
-                    services.AddTransient<IEventLogService, EventLogService>();
+                    services.AddTransient<ICSVEventLogService, CSVEventLogService>();
                 })
                 .Build();
 

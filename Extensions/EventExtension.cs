@@ -12,28 +12,40 @@ namespace Mimica.Extensions
         /// <param name="dequeue"></param>
         /// <returns>csv enumerable</returns>
         public static IEnumerable<string> GetCSVLines(
-            this ConcurrentQueue<Event> eventQueue,
-            bool dequeue = false)
+            this ConcurrentQueue<Event> eventQueue)
         {
-            foreach (Event ev in eventQueue)
-            {
-                if (ev.ScreenShotPath == null)
-                {
-                    continue;
-                }
+            var poisonQueue = new ConcurrentQueue<Event>();
 
-                if (dequeue)
+            while (eventQueue.Count > 0)
+            {
+                if (eventQueue.TryDequeue(out Event? dequeuedEvent))
                 {
-                    if (eventQueue.TryDequeue(out Event? dequeuedEvent))
+                    if (dequeuedEvent.ScreenShotPath == null)
                     {
-                        yield return dequeuedEvent.GetCSVLine();
+                        poisonQueue.Enqueue(dequeuedEvent);
                         continue;
                     }
-                }
 
-                if (eventQueue.TryPeek(out Event? peekedEvent))
+                    yield return dequeuedEvent.GetCSVLine();
+                }
+                else
                 {
-                    yield return peekedEvent.GetCSVLine();
+                    Thread.Sleep(50);
+                }
+            }
+
+            RequeuePoisonQueue(eventQueue, poisonQueue);
+        }
+
+        private static void RequeuePoisonQueue(
+            ConcurrentQueue<Event> eventQueue,
+            ConcurrentQueue<Event> poisonQueue)
+        {
+            while (poisonQueue.Count > 0)
+            {
+                if (poisonQueue.TryDequeue(out Event? dequeuedEvent))
+                {
+                    eventQueue.Enqueue(dequeuedEvent);
                 }
             }
         }

@@ -170,7 +170,7 @@
             // 
             notifyIcon.ContextMenuStrip = contextMenuStrip;
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
-            notifyIcon.Text = "Mimica";
+            notifyIcon.Text = "Mimica Recorder (By Elton)";
             notifyIcon.Visible = true;
             notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
             // 
@@ -243,7 +243,7 @@
             MinimumSize = new Size(400, 184);
             Name = "FrmMain";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Mimica";
+            Text = "Mimica Recorder (By Elton)";
             FormClosing += MainForm_FormClosing;
             Resize += FrmMain_Resize;
             ((System.ComponentModel.ISupportInitialize)imgLastScreenshot).EndInit();

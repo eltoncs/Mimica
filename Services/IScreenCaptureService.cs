@@ -12,8 +12,8 @@ namespace Mimica.Services
 
         Task TakeScreenshotNow(Event? ev);
 
-        void StopCapturing();
-        void StartCapturing();
+        void PauseCapturing();
+        void ResumeCapturing();
         bool IsCapturing();
     }
 }
