@@ -217,7 +217,7 @@
             btnStartStopCapturing.Name = "btnStartStopCapturing";
             btnStartStopCapturing.Size = new Size(127, 29);
             btnStartStopCapturing.TabIndex = 10;
-            btnStartStopCapturing.Text = "Stop Capturing";
+            btnStartStopCapturing.Text = "Pause Capturing";
             btnStartStopCapturing.UseVisualStyleBackColor = true;
             btnStartStopCapturing.Click += btnStartStopCapturing_Click;
             // 
