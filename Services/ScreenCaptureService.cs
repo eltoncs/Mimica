@@ -1,8 +1,10 @@
 ﻿using Mimica.Entities;
-using System.Diagnostics.Eventing.Reader;
 
 namespace Mimica.Services
 {
+    /// <summary>
+    /// Capture screenshots every ScreenshotCaptureIntervalMs milliseconds.
+    /// </summary>
     public class ScreenCaptureService : IScreenCaptureService
     {
         private Bitmap? screenshotImg = null;
@@ -13,6 +15,12 @@ namespace Mimica.Services
             return screenshotImg;
         }
 
+        /// <summary>
+        /// Start capturing screenshots every ScreenshotCaptureIntervalMs milliseconds.
+        /// </summary>
+        /// <param name="ScreenshotCaptureIntervalMs"></param>
+        /// <param name="lightIcon"></param>
+        /// <returns></returns>
         public async Task StartScreenshotCapture(
             int ScreenshotCaptureIntervalMs,
             PictureBox? lightIcon = null)
@@ -35,21 +43,41 @@ namespace Mimica.Services
             }
         }
 
-        public async Task ForceScreenshotCapture(Event ev)
+        /// <summary>
+        /// Imediately take a screenshot and update the event with it.
+        /// </summary>
+        /// <param name="ev"></param>
+        /// <returns></returns>
+        public async Task TakeScreenshotNow(Event? ev)
         {
+            if (ev == null)
+            {
+                return;
+            }
+
             await Task.Run(() => CaptureScreenShot(ev));
         }
 
+        /// <summary>
+        /// Stop capturing screenshots.
+        /// </summary>
         public void StopCapturing()
         {
             this.stopCapturing = true;
         }
 
+        /// <summary>
+        /// Resume capturing screenshots.
+        /// </summary>
         public void StartCapturing()
         {
             this.stopCapturing = false;
         }
 
+        /// <summary>
+        /// Check if the service is capturing screenshots.
+        /// </summary>
+        /// <returns></returns>
         public bool IsCapturing()
         {
             return !this.stopCapturing;

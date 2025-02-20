@@ -1,5 +1,8 @@
 ﻿namespace Mimica.Utils
 {
+    /// <summary>
+    /// Provide utility methods for keyboard events.
+    /// </summary>
     public static class KeyboardUtil
     {
         private static Dictionary<string, string> keyUpMappings = new Dictionary<string,string>()
@@ -40,6 +43,11 @@
             { "Add", "+" },
         };
 
+        /// <summary>
+        /// Get the character from a key code. It is necessary as some keys have different characters when pressed.
+        /// </summary>
+        /// <param name="keyCode"></param>
+        /// <returns>A printable character</returns>
         public static string GetCaracterFromKey(string keyCode)
         {
             if (keyUpMappings.ContainsKey(keyCode))
@@ -49,16 +57,11 @@
             return string.Empty;
         }
 
-        //public static bool IgnoreKeyPress(string keyValue)
-        //{
-        //    if (keyValue.ToString().Length > 1)
-        //    {
-        //        return true;
-        //    }
-
-        //    return ignoredInKeyPress.Contains(keyValue);
-        //}
-
+        /// <summary>
+        /// Checks if a character is a valid keyboard character.
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
         public static bool IsValidKeyboardCharacter(char character)
         {
             return char.IsLetterOrDigit(character) || 
@@ -66,7 +69,12 @@
                 char.IsSymbol(character);
         }
 
-        public static string GetCtrlPlusKey(KeyEventArgs key)
+        /// <summary>
+        /// Handles a combination of keys (ctrl + c, alt + f4, etc).
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns>combined keys</returns>
+        public static string GetSpecialPlusKey(KeyEventArgs key)
         {
             var keyData = key.KeyData.ToString().Split(",");
 

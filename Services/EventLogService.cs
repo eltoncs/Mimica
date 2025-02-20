@@ -1,11 +1,13 @@
 ﻿using Mimica.Entities;
 using Mimica.Extensions;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Drawing.Imaging;
 
 namespace Mimica.Services
 {
+    /// <summary>
+    /// Service to save screenshots and log events to a CSV file.
+    /// </summary>
     public class EventLogService : IEventLogService
     {
         private const string IMG_NOT_AVAILABLE = "*not available*";
@@ -13,7 +15,15 @@ namespace Mimica.Services
         private string eventLogsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Mimica", "EventLogs");
         private string screenshotFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Mimica", "Screenshots");
 
-        public async Task StartLogCapture(
+        /// <summary>
+        /// Starts to log events every intervalMs milliseconds.
+        /// </summary>
+        /// <param name="eventQueue"></param>
+        /// <param name="user"></param>
+        /// <param name="intervalMs"></param>
+        /// <param name="saveIcon"></param>
+        /// <returns></returns>
+        public async Task StartLogRecording(
             ConcurrentQueue<Event> eventQueue,
             string user,
             int intervalMs = 2000,
@@ -24,8 +34,9 @@ namespace Mimica.Services
                 Directory.CreateDirectory(eventLogsFolder);
             }
 
-            string filePath = Path.Combine(eventLogsFolder, $"eventlog_{DateTime.UtcNow.ToUnixDateStamp()}.csv");
+            string eventLogFilePath = Path.Combine(eventLogsFolder, $"eventlog_{DateTime.UtcNow.ToUnixDateStamp()}.csv");
             await Task.Delay(intervalMs);
+
             while (true)
             {
                 if (eventQueue.Count == 0)
@@ -36,26 +47,27 @@ namespace Mimica.Services
 
                 try
                 {
-                    await Task.Run(() => SaveLogToFile(
-                        filePath: filePath,
+                    await Task.Run(() => SaveEventLogs(
+                        filePath: eventLogFilePath,
                         eventQueue: eventQueue));
 
                     await Task.Delay(intervalMs);
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine($"Error saving log to file: {ex.Message}");
+                    Console.WriteLine($"Error saving log to file: {ex.Message}");//TODO Must be replaced by a log servervice
                 }
             }
         }
 
-        private void UpdateEvents(ConcurrentQueue<Event> eventQueue)
+        private void SaveEventsScreenshots(ConcurrentQueue<Event> eventQueue)
         {
             if (eventQueue.Count == 0)
             {
                 return;
             }
 
+            //Update the screenshot path for each event
             foreach (Event ev in eventQueue)
             {
                 if (ev.screenShotImg != null)
@@ -79,10 +91,10 @@ namespace Mimica.Services
                     Directory.CreateDirectory(screenshotFolder);
                 }
 
-                string filePath = Path.Combine(screenshotFolder, $"screenshot_{DateTime.UtcNow.ToUnixTimeStamp()}.png");
-                screenshotImg.Save(filePath, ImageFormat.Png);
+                string screenshotFilePath = Path.Combine(screenshotFolder, $"screenshot_{DateTime.UtcNow.ToUnixTimeStamp()}.png");
+                screenshotImg.Save(screenshotFilePath, ImageFormat.Png);
 
-                return filePath;
+                return screenshotFilePath;
             }
             catch (Exception ex)
             {
@@ -90,18 +102,18 @@ namespace Mimica.Services
             }
         }
 
-        private void SaveLogToFile(
+        private void SaveEventLogs(
             string filePath,
             ConcurrentQueue<Event> eventQueue)
         {
             try
             {
-                this.UpdateEvents(eventQueue);
+                this.SaveEventsScreenshots(eventQueue);
                 File.AppendAllLines(filePath, eventQueue.GetCSVLines(dequeue: true));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error appending lines to CSV: {ex.Message}");
+                Console.WriteLine($"Error appending lines to CSV: {ex.Message}");//TODO Must be replaced by a log servervice
             }
         }
     }

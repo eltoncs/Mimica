@@ -5,11 +5,12 @@ namespace Mimica.Extensions
 {
     public static class EventExtension
     {
-        public static string GetCSVLine(this Event @event)
-        {
-            return $"{@event.TimeStamp},{@event.EventType},{@event.KeyPressed},{@event.ScreenShotPath}";
-        }
-
+        /// <summary>
+        /// Extract all lines from the event queue parsing them to CSV format.
+        /// </summary>
+        /// <param name="eventQueue"></param>
+        /// <param name="dequeue"></param>
+        /// <returns>csv enumerable</returns>
         public static IEnumerable<string> GetCSVLines(
             this ConcurrentQueue<Event> eventQueue,
             bool dequeue = false)
@@ -35,6 +36,16 @@ namespace Mimica.Extensions
                     yield return peekedEvent.GetCSVLine();
                 }
             }
+        }
+
+        /// <summary>
+        /// Converts an event to a CSV line.
+        /// </summary>
+        /// <param name="event"></param>
+        /// <returns>csv event</returns>
+        public static string GetCSVLine(this Event @event)
+        {
+            return $"{@event.TimeStamp},{@event.EventType},{@event.KeyPressed},{@event.ScreenShotPath}";
         }
     }
 }

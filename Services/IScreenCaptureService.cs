@@ -10,7 +10,7 @@ namespace Mimica.Services
             int ScreenshotCaptureIntervalMs,
             PictureBox? lightIcon = null);
 
-        Task ForceScreenshotCapture(Event? ev);
+        Task TakeScreenshotNow(Event? ev);
 
         void StopCapturing();
         void StartCapturing();

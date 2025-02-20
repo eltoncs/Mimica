@@ -1,3 +1,6 @@
+//Contains the business logic
+//Uses a concurrent queue to store the events
+//Consumes various services to capture events, screenshots and log them
 namespace Mimica
 {
     using Mimica.Services;
@@ -15,6 +18,7 @@ namespace Mimica
 
         private readonly AppSettings appSettings;
         private readonly IScreenCaptureService screenCaptureService;
+        private readonly IEventHooksService eventHooksService;
 
         public FrmMain(
             IOptions<AppSettings> appSettings,
@@ -23,24 +27,27 @@ namespace Mimica
             IEventLogService eventLogService)
         {
             this.appSettings = appSettings.Value;
-
-            var ScreenshotCaptureIntervalMs = int.Parse(this.appSettings.ScreenshotCaptureIntervalMs);
+            this.eventHooksService = eventHooksService;
             this.screenCaptureService = screenCaptureService;
+
+            var screenshotCaptureIntervalMs = int.Parse(this.appSettings.ScreenshotCaptureIntervalMs);            
+            var logRecordingIntervalMs = int.Parse(this.appSettings.ScreenshotCaptureIntervalMs);            
 
             InitializeComponent();
 
             screenCaptureService.StartScreenshotCapture(
-                ScreenshotCaptureIntervalMs: ScreenshotCaptureIntervalMs,
+                ScreenshotCaptureIntervalMs: screenshotCaptureIntervalMs,
                 lightIcon: this.imgStatus);
 
-            eventHooksService.Subscribe(
+            eventLogService.StartLogRecording(
+                user: this.currentUser,
+                eventQueue: this.eventQueue,
+                intervalMs: logRecordingIntervalMs);
+
+            this.eventHooksService.Subscribe(
                 ProcessMouseEvents,
                 ProcessKeyUp,
                 ProcessKeyPress);
-
-            eventLogService.StartLogCapture(
-                user: this.currentUser,
-                eventQueue: this.eventQueue);
         }
 
         //Event hooks callbacks
@@ -76,11 +83,8 @@ namespace Mimica
                 KeyPressed = keyPressed
             };
 
-            this.screenCaptureService.ForceScreenshotCapture(newEvent);
-            newEvent.screenShotImg = this.screenCaptureService.GetLastScreenshotImg();
-
+            this.screenCaptureService.TakeScreenshotNow(newEvent);
             this.eventQueue.Enqueue(newEvent);
-
             this.logEventToScreen();
         }
 
@@ -98,15 +102,12 @@ namespace Mimica
                 KeyPressed = keyPressed
             };
 
-            this.screenCaptureService.ForceScreenshotCapture(newEvent);
-            newEvent.screenShotImg = this.screenCaptureService.GetLastScreenshotImg();
-
+            this.screenCaptureService.TakeScreenshotNow(newEvent);
             this.eventQueue.Enqueue(newEvent);
-
             this.logEventToScreen();
         }
 
-        //Other private methods
+        //Private methods
         private void logEventToScreen()
         {
             if (this.eventQueue.Count == 0)
@@ -114,7 +115,7 @@ namespace Mimica
                 return;
             }
 
-            this.logEventToTextPanel();
+            this.LogEventToListView();
             Event? lastEvent = this.eventQueue.LastOrDefault();
 
             if (lastEvent == null)
@@ -128,7 +129,7 @@ namespace Mimica
             }
         }
 
-        private void logEventToTextPanel()
+        private void LogEventToListView()
         {
             if (this.eventQueue.Count == 0)
             {
@@ -154,86 +155,17 @@ namespace Mimica
 
         private void ExitApp(object sender, EventArgs e)
         {
-            notifyIcon.Visible = false;
+            this.eventHooksService.Unsubscribe();
+            notifyIcon.Dispose();
+
             Application.Exit();
         }
 
         private void ShowApp(object sender, EventArgs e)
         {
             this.Show();
+            this.Focus();
             this.WindowState = FormWindowState.Normal;
-        }
-
-
-        #region Event Handlers
-        private void chkTopMost_CheckedChanged(object sender, EventArgs e)
-        {
-            this.TopMost = this.chkTopMost.Checked;
-        }
-
-        private void cmdClear_Click(object sender, EventArgs e)
-        {
-            this.eventQueue.Clear();
-            this.lvwEvents.Items.Clear();
-            this.lblEventCount.Text = $"{eventQueue.Count} events";
-        }
-
-        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            this.ShowApp(sender, e);
-        }
-
-        private void FrmMain_Resize(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-            {
-                this.Hide();
-
-                this.notifyIcon.BalloonTipTitle = "Mimica Minimized";
-                this.notifyIcon.BalloonTipText = "The application is still running in the background.";
-                this.notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-                this.notifyIcon.ShowBalloonTip(3000);
-            }
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason == CloseReason.UserClosing)
-            {
-                e.Cancel = true;
-                this.WindowState = FormWindowState.Minimized;
-            }
-        }
-
-        private void showToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.ShowApp(sender, e);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.ExitApp(sender, e);
-        }
-
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            this.ExitApp(sender, e);
-        }
-        #endregion
-
-        private void btnStartStopCapturing_Click(object sender, EventArgs e)
-        {
-            if (this.screenCaptureService.IsCapturing())
-            {
-                this.screenCaptureService.StopCapturing();
-                this.btnStartStopCapturing.Text = "Start Capturing";
-                this.lblStatus.Text = "Paused";
-                return;
-            }
-
-            this.screenCaptureService.StartCapturing();
-            this.btnStartStopCapturing.Text = "Stop Capturing";
-            this.lblStatus.Text = "Monitoring";
         }
     }
 }

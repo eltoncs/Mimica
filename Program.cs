@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Mimica.Properties;
 using Mimica.Services;
 
@@ -36,7 +35,15 @@ namespace Mimica
             Application.SetCompatibleTextRenderingDefault(false);
 
             ApplicationConfiguration.Initialize();
-            Application.Run(ServiceProvider.GetRequiredService<FrmMain>());
+
+            try
+            {
+                Application.Run(ServiceProvider.GetRequiredService<FrmMain>());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

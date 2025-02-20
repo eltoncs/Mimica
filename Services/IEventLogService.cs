@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 public interface IEventLogService
 {
-    Task StartLogCapture(
+    Task StartLogRecording(
         ConcurrentQueue<Event> eventQueue,
         string user,
         int intervalMs = 2000,

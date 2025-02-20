@@ -3,6 +3,9 @@ using Mimica.Utils;
 
 namespace Mimica.Services
 {
+    /// <summary>
+    /// Provide services to hook global events to capture mouse and keyboard inputs.
+    /// </summary>
     public class EventHooksService : IEventHooksService
     {
         private IKeyboardMouseEvents? globalHook;
@@ -25,6 +28,8 @@ namespace Mimica.Services
             globalHook.KeyUp += KeyUpHook;            
         }
 
+        //Trigges every time a key is pressed, before being released.
+        //Handles keyboard characters only.
         private void KeyPressHook(object? sender, KeyPressEventArgs key)
         {
             if (!KeyboardUtil.IsValidKeyboardCharacter(key.KeyChar))
@@ -35,17 +40,19 @@ namespace Mimica.Services
             this.processKeyPress!(key.KeyChar.ToString());
         }
 
+        //Trigges every time a key is released.
+        //Handles special keys only (Enter, Del, F1, etc).
         private void KeyUpHook(object? sender, KeyEventArgs key)
         {
-            if (!IsControlKey(key))
+            if (!IsSpecialKey(key))
             {
                 return;
             }
 
-            var ctrlPlusKey = KeyboardUtil.GetCtrlPlusKey(key);
-            if (ctrlPlusKey != string.Empty)
+            var specialPlusKey = KeyboardUtil.GetSpecialPlusKey(key);
+            if (specialPlusKey != string.Empty)
             {
-                this.processKeyUp!($"<{ctrlPlusKey}>");
+                this.processKeyUp!($"<{specialPlusKey}>");
                 return;
             }
 
@@ -59,20 +66,25 @@ namespace Mimica.Services
             return;
         }
 
+        //Triggers every time a mouse button is pressed.
         private void MouseDownHook(object? sender, MouseEventExtArgs e)
         {
             this.processMouseEvents!(e.Button.ToString());
         }
 
-        private bool IsControlKey(KeyEventArgs key)
+        //Checks if the key pressed is a special key.
+        private bool IsSpecialKey(KeyEventArgs key)
         {
             var keyCode = key.KeyCode.ToString();
             var keyData = key.KeyData.ToString();
 
             return (keyCode == keyData && keyData.Length > 1) 
-                || KeyboardUtil.GetCtrlPlusKey(key) != string.Empty;
+                || KeyboardUtil.GetSpecialPlusKey(key) != string.Empty;
         }
 
+        /// <summary>
+        /// Unsubscribe from global events.
+        /// </summary>
         public void Unsubscribe()
         {
             if (globalHook != null)
